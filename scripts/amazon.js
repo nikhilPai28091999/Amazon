@@ -60,7 +60,6 @@ document.querySelector(".js-products-grid").innerHTML = productsHtml;
 document.querySelectorAll(".js-add-button").forEach((button) => {
   button.addEventListener("click", () => {
     {
-      debugger;
       const productId = button.dataset.productId;
 
       let matchingItem;
@@ -79,8 +78,13 @@ document.querySelectorAll(".js-add-button").forEach((button) => {
           quantity: 1,
         });
       }
+      let cartQuantity = 0;
 
-      console.log(cart);
+      cart.forEach((item) => {
+        cartQuantity += item.quantity;
+      });
+
+      document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
     }
   });
 });
