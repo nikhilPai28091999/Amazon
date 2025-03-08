@@ -1,5 +1,11 @@
-import { cart, addToCart } from "../data/cart.js";
+import {
+  cart,
+  addToCart,
+  saveToStorage,
+  updateCartQuantity,
+} from "../data/cart.js";
 import { products } from "../data/products.js";
+import { formatCurrency } from "./utils/money.js";
 let productsHtml = "";
 
 products.map((product) => {
@@ -26,8 +32,8 @@ products.map((product) => {
             }</div>
           </div>
 
-          <div class="product-price">$${(product.priceCents / 100).toFixed(
-            2
+          <div class="product-price">$${formatCurrency(
+            product.priceCents
           )}</div>
 
           <div class="product-quantity-container">
@@ -57,16 +63,6 @@ products.map((product) => {
           }">Add to Cart</button>
         </div>`;
 });
-
-function updateCartQuantity() {
-  let cartQuantity = 0;
-
-  cart.forEach((item) => {
-    cartQuantity += item.quantity;
-  });
-
-  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
-}
 
 document.querySelector(".js-products-grid").innerHTML = productsHtml;
 
