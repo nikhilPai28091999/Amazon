@@ -62,8 +62,8 @@ export function updateCartQuantity() {
 
 export function deleteFromCart(productId) {
   //   debugger;
-  const newCart = cart.filter((item) => item.productId !== productId);
-  //   cart = newCart;
+  const newCart = cart.filter((item) => item.id !== productId);
+  cart = newCart;
   saveToStorage();
   return newCart;
 }
