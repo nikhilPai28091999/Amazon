@@ -1,25 +1,33 @@
-import { cart, deleteFromCart, updateDeliveryOption } from "../../data/cart.js";
+import {
+  cart,
+  deleteFromCart,
+  updateCartQuantity,
+  updateDeliveryOption,
+} from "../../data/cart.js";
 import {
   deliveryOptions,
   getDeliveryOption,
 } from "../../data/deliveryOptions.js";
 import { getProduct, products } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
-import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import { renderPaymentSummary } from "./paymentSummary.js";
 
+// Initialize the dayjs format plugin
+if (dayjs.extend) {
+  dayjs.extend(window.dayjs_plugin_customParseFormat);
+}
+
 export function renderOrderSummary() {
-  let cartHtml;
+  let cartHtml = ""; // Initialize with empty string to avoid undefined
 
   cart.forEach((item) => {
-    const matchingProduct = getProduct(item.id);
-
+    const matchingProduct = getProduct(item.productId);
     const deliveryOptionId = item.deliveryOptionId;
-
     const macthingDeliveryItem = getDeliveryOption(deliveryOptionId);
 
     cartHtml += `
-    <div class="cart-item-container js-cart-item-${matchingProduct.id}">
+    <div class="cart-item-container js-cart-item-container
+        js-cart-item-container-${matchingProduct.id}">
       <div class="delivery-date">Delivery date: ${getDateString(
         macthingDeliveryItem
       )}</div>
@@ -39,9 +47,6 @@ export function renderOrderSummary() {
             <span> Quantity: <span class="quantity-label">${
               item.quantity
             }</span> </span>
-            <span class="update-quantity-link link-primary">
-              Update
-            </span>
             <span class="delete-quantity-link link-primary js-delete-from-cart" data-product-id="${
               matchingProduct.id
             }">
@@ -70,7 +75,7 @@ export function renderOrderSummary() {
   }
 
   function deliveryDatefn(matchingProduct, item) {
-    let deliveryHTML;
+    let deliveryHTML = ""; // Initialize with empty string to avoid undefined
     deliveryOptions.forEach((deliveryOption) => {
       const dateString = getDateString(deliveryOption);
 
@@ -109,10 +114,13 @@ export function renderOrderSummary() {
       const productId = button.dataset.productId;
       deleteFromCart(productId);
 
-      const container = document.querySelector(`.js-cart-item-${productId}`);
+      const container = document.querySelector(
+        `.js-cart-item-container-${productId}`
+      );
       container.remove();
-
+      updateCartQuantity();
       renderPaymentSummary();
+      console.log(cart);
     });
   });
 
